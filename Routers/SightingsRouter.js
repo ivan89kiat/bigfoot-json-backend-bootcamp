@@ -7,8 +7,11 @@ class SightingsRouter {
     let router = this.express.Router();
 
     router.get("/", this.controller.list);
+    router.post("/", this.controller.postNewSighting);
     router.get("/:sightingIndex", this.controller.listByIndex);
+    router.delete("/:sightingIndex", this.controller.removeSighting);
     router.get("/filter/:year", this.controller.listByFilter);
+
     return router;
   };
 }
