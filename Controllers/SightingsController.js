@@ -3,8 +3,9 @@ const { getSightings } = require("../utils");
 const Op = Sequelize.Op;
 
 class SightingsController {
-  constructor(model) {
+  constructor(model, comments) {
     this.model = model;
+    this.comments = comments;
   }
 
   list = async (req, res) => {
@@ -68,6 +69,73 @@ class SightingsController {
 
       const newSightings = await this.model.findAll();
       res.json(newSightings);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  retrieveComment = async (req, res) => {
+    try {
+      const { sightingIndex } = req.params;
+      const condition = { where: { sightingId: sightingIndex } };
+
+      const allComments = await this.comments.findAll(condition);
+      res.json(allComments);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  postComment = async (req, res) => {
+    try {
+      const { sightingIndex } = req.params;
+      const { content } = req.body;
+
+      const postComment = await this.comments.create({
+        content: content,
+        sightingId: sightingIndex,
+      });
+      res.json(postComment);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  retrieveEditComment = async (req, res) => {
+    try {
+      const { commentId } = req.params;
+      const commentForEdit = await this.comments.findByPk(commentId);
+      res.json(commentForEdit);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  editComment = async (req, res) => {
+    try {
+      const { commentId } = req.params;
+      const { content } = req.body;
+      const editedComment = await this.comments.update(
+        { content: content },
+        {
+          where: { id: commentId },
+        }
+      );
+      const newCommentList = await this.comments.findAll();
+      res.json(newCommentList);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  deleteComment = async (req, res) => {
+    try {
+      const { commentId } = req.params;
+      const editedComment = await this.comments.destroy({
+        where: { id: commentId },
+      });
+      const newCommentList = await this.comments.findAll();
+      res.json(newCommentList);
     } catch (e) {
       console.log(e);
     }

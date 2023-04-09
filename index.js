@@ -11,12 +11,12 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cors());
 
 const db = require("./db/models/index");
-const { sightings } = db;
+const { sighting, comment } = db;
 
 const SightingsController = require("./Controllers/SightingsController");
 const SightingsRouter = require("./Routers/SightingsRouter");
 
-const sightingsController = new SightingsController(sightings);
+const sightingsController = new SightingsController(sighting, comment);
 const sightingsRouter = new SightingsRouter(express, sightingsController);
 
 app.use("/sightings", sightingsRouter.route());
